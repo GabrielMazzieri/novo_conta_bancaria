@@ -32,6 +32,14 @@ public record ContaResumoDTO(
                     .build();
         } else {
             throw new IllegalArgumentException("Tipo de conta inválido: " + this.tipoConta);
+    }
+
+    public static Object fromEntity(Conta conta){
+        return new ContaResumoDTO(
+            conta.getNumero(),
+            conta.getTipo(),
+            conta.getSaldo()
+            );
         }
     }
 }

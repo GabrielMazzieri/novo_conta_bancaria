@@ -4,11 +4,13 @@ package com.senai.conta_bancaria.interface_ui.controller;
 import com.senai.conta_bancaria.application.dto.ClienteRegistroDTO;
 import com.senai.conta_bancaria.application.dto.ClienteResponseDTO;
 import com.senai.conta_bancaria.application.service.ClienteService;
+import com.senai.conta_bancaria.domain.entity.Cliente;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -19,6 +21,17 @@ public class ClienteController {
 
     @PostMapping
     public ClienteResponseDTO registrarCliente(@RequestBody ClienteRegistroDTO dto) {
-        return service.registrarCliente(dto);
+        return ResponseEntity.created(URI.create("/api/cliente/cpf/"+novoCliente.cpf())
+        ).body(novoCliente);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClienteResponseDTO>> listarClientesAtivos(){
+        return ResponseEntity.ok(service.listarClientesAtivos());
+    }
+
+    @GetMapping
+    public ResponseEntity<ClienteResponseDTO> buscarClientesAtivosPorCpf(@PathVariable String cpf){
+        return ResponseEntity.ok(service.buscarClientesAtivoPorCpf(cpf));
     }
 }

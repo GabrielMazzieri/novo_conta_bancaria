@@ -9,7 +9,7 @@ import java.util.List;
 public record ClienteRegistroDTO(
     String nome,
     String cpf,
-    ContaResumoDTO conta
+    ContaResumoDTO contaDTO
 ){
 
     public Cliente toEntity(){

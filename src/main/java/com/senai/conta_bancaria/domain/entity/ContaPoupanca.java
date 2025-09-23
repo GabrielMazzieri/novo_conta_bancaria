@@ -21,4 +21,9 @@ public class ContaPoupanca extends Conta {
 
     @Column(precision = 4)
     private BigDecimal rendimento;
+
+    @Override
+    public String getTipoConta() {
+        return "POUPANCA";
+    }
 }
