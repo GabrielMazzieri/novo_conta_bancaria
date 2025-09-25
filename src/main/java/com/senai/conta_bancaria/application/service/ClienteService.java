@@ -57,4 +57,16 @@ public class ClienteService {
 
         return ClienteResponseDTO.fromEntity(repository.save(cliente));
     }
+
+    public void deletarCliente(String cpf){
+        var cliente = repository.findByCpfAndAtivoTrue(cpf).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado.")
+        );
+        cliente.setAtivo(false);
+        cliente.getContas().forEach(
+                conta -> conta.setAtiva(false)
+        );
+        repository.save(cliente);
+    }
+
 }

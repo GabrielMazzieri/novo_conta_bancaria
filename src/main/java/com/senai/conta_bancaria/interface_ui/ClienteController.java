@@ -41,4 +41,8 @@ public class ClienteController {
                                                                @RequestBody ClienteAtualizadoDTO dto) {
         return ResponseEntity.ok(service.atualizarCliente(cpf, dto));
     }
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Void> deletarCliente(@PathVariable String cpf){
+        return ResponseEntity.noContent().build();
+    }
 }
