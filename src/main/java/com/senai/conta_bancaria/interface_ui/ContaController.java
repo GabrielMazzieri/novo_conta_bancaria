@@ -1,5 +1,6 @@
 package com.senai.conta_bancaria.interface_ui;
 
+import com.senai.conta_bancaria.application.dto.ContaAtualizacaoDTO;
 import com.senai.conta_bancaria.application.dto.ContaResumoDTO;
 import com.senai.conta_bancaria.application.dto.ValorSaqueDepositoDTO;
 import com.senai.conta_bancaria.application.service.ContaService;
@@ -25,16 +26,28 @@ public class ContaController {
         return ResponseEntity.ok(service.buscarContaPorNumero(numeroDaConta));
     }
 
+    @PutMapping("/{numeroDaConta}")
+    public ResponseEntity<ContaResumoDTO> atualizarConta(@PathVariable String numeroDaConta,
+                                                @RequestBody ContaAtualizacaoDTO dto) {
+        return ResponseEntity.ok(service.atualizarContaPorNumero(numeroDaConta, dto));
+    }
+
     @DeleteMapping("/{numeroDaConta}")
     public ResponseEntity<Void> deletarConta(@PathVariable String numeroDaConta) {
         service.deletarConta(numeroDaConta);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{numeroDaConta}/sacar")
+    @PostMapping("/{numeroDaConta}/sacar")
     public ResponseEntity<ContaResumoDTO> sacar(@PathVariable String numeroDaConta,
                                                @RequestBody ValorSaqueDepositoDTO dto) {
         return ResponseEntity.ok(service.sacar(numeroDaConta, dto));
+    }
+
+    @PostMapping("/{numeroDaConta}/depositar")
+    public ResponseEntity<ContaResumoDTO> depositar(@PathVariable String numeroDaConta,
+                                                @RequestBody ValorSaqueDepositoDTO dto) {
+        return ResponseEntity.ok(service.depositar(numeroDaConta, dto));
     }
 }
 

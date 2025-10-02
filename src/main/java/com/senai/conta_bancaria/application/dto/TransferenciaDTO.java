@@ -1,4 +1,8 @@
 package com.senai.conta_bancaria.application.dto;
 
-public record TransferenciaDTO {
-}
+import java.math.BigDecimal;
+
+public record TransferenciaDTO (
+        Long numeroDestino,
+        BigDecimal valor
+){}
