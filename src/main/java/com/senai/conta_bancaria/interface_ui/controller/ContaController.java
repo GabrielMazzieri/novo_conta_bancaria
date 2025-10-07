@@ -1,11 +1,10 @@
-package com.senai.conta_bancaria.interface_ui;
+package com.senai.conta_bancaria.interface_ui.controller;
 
 import com.senai.conta_bancaria.application.dto.ContaAtualizacaoDTO;
 import com.senai.conta_bancaria.application.dto.ContaResumoDTO;
 import com.senai.conta_bancaria.application.dto.TransferenciaDTO;
 import com.senai.conta_bancaria.application.dto.ValorSaqueDepositoDTO;
 import com.senai.conta_bancaria.application.service.ContaService;
-import com.senai.conta_bancaria.domain.entity.Conta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

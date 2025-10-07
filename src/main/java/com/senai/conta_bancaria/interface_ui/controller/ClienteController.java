@@ -1,4 +1,4 @@
-package com.senai.conta_bancaria.interface_ui;
+package com.senai.conta_bancaria.interface_ui.controller;
 
 import com.senai.conta_bancaria.application.dto.ClienteAtualizadoDTO;
 import com.senai.conta_bancaria.application.dto.ClienteRegistroDTO;
