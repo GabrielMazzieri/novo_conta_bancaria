@@ -1,6 +1,6 @@
 package com.senai.conta_bancaria.application.dto;
 
-import com.senai.conta_bancaria.domain.entity.Cliente;
+import com.senai.conta_bancaria_turma1.domain.entity.Cliente;
 
 import java.util.List;
 

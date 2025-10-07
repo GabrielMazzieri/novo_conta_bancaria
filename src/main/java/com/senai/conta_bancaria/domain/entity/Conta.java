@@ -1,5 +1,8 @@
 package com.senai.conta_bancaria.domain.entity;
 
+import com.senai.conta_bancaria_turma1.domain.exception.SaldoInsuficienteException;
+import com.senai.conta_bancaria_turma1.domain.exception.TransferirParaMesmaContaException;
+import com.senai.conta_bancaria_turma1.domain.exception.ValoresNegativosException;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,31 +41,35 @@ public abstract class Conta {
     @JoinColumn(name = "cliente_id", foreignKey = @ForeignKey(name = "fk_conta_cliente"))
     private Cliente cliente;
 
-    public abstract String getTipo();
+    public abstract String getTipo() ;
 
     public void sacar(BigDecimal valor) {
-        validarValorPositivo(valor);
-        if (valor.compareTo(saldo) > 0)
-            throw new IllegalArgumentException("Saldo insuficiente para saque");
+        validarValorMaiorQueZero(valor, "saque");
+        if (valor.compareTo(saldo) > 0) {
+            throw new SaldoInsuficienteException("saque");
+        }
         saldo = saldo.subtract(valor);
     }
 
     public void depositar(BigDecimal valor) {
-        validarValorPositivo(valor);
+        validarValorMaiorQueZero(valor, "depósito");
         saldo = saldo.add(valor);
     }
 
-    protected static void validarValorPositivo(BigDecimal valor) {
-        if (valor.compareTo(BigDecimal.ZERO) <= 0)
-            throw new IllegalArgumentException("Valor inválido, deve ser maior que zero");
+
+
+    protected static void validarValorMaiorQueZero(BigDecimal valor, String operacao) {
+        if(valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValoresNegativosException(operacao);
+        }
     }
 
     public void transferir(BigDecimal valor, Conta contaDestino) {
-       if(this.id.equals(contaDestino.getId())){
-           throw new IllegalArgumentException("Não é possível transferir para a mesma conta.");
-       }
+        if (this.id.equals(contaDestino.getId())) {
+            throw new TransferirParaMesmaContaException();
+        }
 
-       this.sacar(valor);
-       contaDestino.depositar(valor);
+        this.sacar(valor);
+        contaDestino.depositar(valor);
     }
 }
