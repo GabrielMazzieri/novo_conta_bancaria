@@ -1,8 +1,8 @@
 package com.senai.conta_bancaria.domain.entity;
 
-import com.senai.conta_bancaria_turma1.domain.exception.SaldoInsuficienteException;
-import com.senai.conta_bancaria_turma1.domain.exception.TransferirParaMesmaContaException;
-import com.senai.conta_bancaria_turma1.domain.exception.ValoresNegativosException;
+import com.senai.conta_bancaria.domain.exception.SaldoInsuficienteException;
+import com.senai.conta_bancaria.domain.exception.TransferirParaMesmaContaException;
+import com.senai.conta_bancaria.domain.exception.ValoresNegativosException;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

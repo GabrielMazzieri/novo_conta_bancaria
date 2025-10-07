@@ -1,16 +1,16 @@
 package com.senai.conta_bancaria.application.service;
 
-import com.senai.conta_bancaria_turma1.application.dto.ContaAtualizacaoDTO;
-import com.senai.conta_bancaria_turma1.application.dto.ContaResumoDTO;
-import com.senai.conta_bancaria_turma1.application.dto.TransferenciaDTO;
-import com.senai.conta_bancaria_turma1.application.dto.ValorSaqueDepositoDTO;
-import com.senai.conta_bancaria_turma1.domain.entity.Conta;
-import com.senai.conta_bancaria_turma1.domain.entity.ContaCorrente;
-import com.senai.conta_bancaria_turma1.domain.entity.ContaPoupanca;
-import com.senai.conta_bancaria_turma1.domain.exception.EntidadeNaoEncontradaException;
-import com.senai.conta_bancaria_turma1.domain.exception.RendimentoInvalidoException;
-import com.senai.conta_bancaria_turma1.domain.exception.TipoDeContaInvalidaException;
-import com.senai.conta_bancaria_turma1.domain.repository.ContaRepository;
+import com.senai.conta_bancaria.application.dto.ContaAtualizacaoDTO;
+import com.senai.conta_bancaria.application.dto.ContaResumoDTO;
+import com.senai.conta_bancaria.application.dto.TransferenciaDTO;
+import com.senai.conta_bancaria.application.dto.ValorSaqueDepositoDTO;
+import com.senai.conta_bancaria.domain.entity.Conta;
+import com.senai.conta_bancaria.domain.entity.ContaCorrente;
+import com.senai.conta_bancaria.domain.entity.ContaPoupanca;
+import com.senai.conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
+import com.senai.conta_bancaria.domain.exception.RendimentoInvalidoException;
+import com.senai.conta_bancaria.domain.exception.TipoDeContaInvalidaException;
+import com.senai.conta_bancaria.domain.repository.ContaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
