@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+        public ResponseEntity<String> handlerConflitosGerais (Exception ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(ValoresNegativosException.class)
     public ResponseEntity<String> handleValoresNegativos(ValoresNegativosException ex) {
         return new ResponseEntity <>(ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -33,13 +39,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity <>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(ValoresNegativosException.class)
-    public ResponseEntity<String> handleContaMesmoTipo(ContaMesmoTipoException ex) {
+    @ExceptionHandler(TransferirParaMesmaContaException.class)
+    public ResponseEntity<String> handleTransferirParaMesmaConta(TransferirParaMesmaContaException ex) {
         return new ResponseEntity <>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(ValoresNegativosException.class)
-    public ResponseEntity<String> handleContaMesmoTipo(ContaMesmoTipoException ex) {
+    @ExceptionHandler(RendimentoInvalidoException.class)
+    public ResponseEntity<String> handleRendimentoInvalido(RendimentoInvalidoException ex) {
         return new ResponseEntity <>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 }
