@@ -5,6 +5,7 @@ import com.senai.conta_bancaria.application.dto.ContaResumoDTO;
 import com.senai.conta_bancaria.application.dto.TransferenciaDTO;
 import com.senai.conta_bancaria.application.dto.ValorSaqueDepositoDTO;
 import com.senai.conta_bancaria.application.service.ContaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ContaController {
 
     @PutMapping("/{numeroDaConta}")
     public ResponseEntity<ContaResumoDTO> atualizarConta(@PathVariable String numeroDaConta,
-                                                         @RequestBody ContaAtualizacaoDTO dto) {
+                                                         @Valid @RequestBody ContaAtualizacaoDTO dto) {
         return ResponseEntity.ok(service.atualizarConta(numeroDaConta, dto));
     }
 
@@ -41,19 +42,19 @@ public class ContaController {
 
     @PostMapping("/{numeroDaConta}/sacar")
     public ResponseEntity<ContaResumoDTO> sacar(@PathVariable String numeroDaConta,
-                                                @RequestBody ValorSaqueDepositoDTO dto) {
+                                                @Valid @RequestBody ValorSaqueDepositoDTO dto) {
         return ResponseEntity.ok(service.sacar(numeroDaConta, dto));
     }
 
     @PostMapping("/{numeroDaConta}/depositar")
     public ResponseEntity<ContaResumoDTO> depositar(@PathVariable String numeroDaConta,
-                                                    @RequestBody ValorSaqueDepositoDTO dto) {
+                                                    @Valid @RequestBody ValorSaqueDepositoDTO dto) {
         return ResponseEntity.ok(service.depositar(numeroDaConta, dto));
     }
 
     @PostMapping("/{numeroDaConta}/transferir")
     public ResponseEntity<ContaResumoDTO> transferir(@PathVariable String numeroDaConta,
-                                                     @RequestBody TransferenciaDTO dto) {
+                                                     @Valid @RequestBody TransferenciaDTO dto) {
         return ResponseEntity.ok(service.transferir(numeroDaConta, dto));
     }
 
