@@ -1,20 +1,48 @@
 package com.senai.conta_bancaria.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.senai.conta_bancaria.domain.enums.Role;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-public abstract Usuario {
+@Getter
+@Setter
+@Entity
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
+
+public abstract class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    protected String id;
 
+    @NotBlank
     @Column(nullable = false, length = 120)
-    private String nome;
-    @Column(nullable = false, length = 11)
-    private String cpf;
-    @Column(nullable = false)
-    private Boolean ativo;
+    protected String nome;
 
+    @Email
+    @Column(nullable = false, length = 120)
+    protected String email;
+
+    @NotBlank
+    @Column(nullable = false, length = 11)
+    protected String cpf;
+
+    @NotBlank
+    @Column(nullable = false, length = 80)
+    protected String senha;
+
+    @Column(nullable = false)
+    protected Boolean ativo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    protected Role role;
 }

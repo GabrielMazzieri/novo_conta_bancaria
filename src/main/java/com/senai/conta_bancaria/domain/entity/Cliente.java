@@ -17,7 +17,7 @@ import java.util.List;
                  @UniqueConstraint( columnNames = "cpf")
         }
 )
-public  class Cliente {
+public class Cliente extends Usuario {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Conta> contas;
 }

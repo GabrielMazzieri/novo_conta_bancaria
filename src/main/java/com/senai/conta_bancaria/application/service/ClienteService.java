@@ -48,8 +48,6 @@ public class ClienteService {
         return ClienteResponseDTO.fromEntity(cliente);
     }
 
-
-
     public ClienteResponseDTO atualizarCliente(String cpf, ClienteAtualizadoDTO dto) {
         var cliente = buscarClientePorCpfEAtivo(cpf);
 
