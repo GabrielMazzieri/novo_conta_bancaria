@@ -2,16 +2,14 @@ package com.senai.conta_bancaria.application.dto;
 
 import com.senai.conta_bancaria.domain.entity.Cliente;
 import com.senai.conta_bancaria.domain.entity.Conta;
+import com.senai.conta_bancaria.domain.entity.Gerente;
 import com.senai.conta_bancaria.domain.enums.Role;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 
-import java.util.ArrayList;
-
-
 @Builder
-public record ClienteRegistroDTO(
+public record GerenteRegistroDTO(
         @NotNull(message = "O nome não pode ser nulo.")
         @NotBlank(message = "O nome não pode ser vazio.")
         @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres.")
@@ -34,15 +32,14 @@ public record ClienteRegistroDTO(
         @NotNull(message = "As informações da conta são obrigatórias")
         @Valid ContaResumoDTO conta
 ) {
-    public Cliente toEntity() {
-        return Cliente.builder()
+    public Gerente toEntity() {
+        return Gerente.builder()
                 .ativo(true)
                 .email(email)
                 .senha(senha)
                 .nome(nome)
                 .cpf(cpf)
-                .contas(new ArrayList<Conta>())
-                .role(Role.CLIENTE)
+                .role(Role.GERENTE)
                 .build();
     }
 }

@@ -12,10 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
 @Entity
-@Table(name="gerente")
 
 public class Gerente extends Usuario {
 

@@ -8,15 +8,19 @@ import com.senai.conta_bancaria.domain.exception.ContaMesmoTipoException;
 import com.senai.conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.conta_bancaria.domain.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ClienteService {
 
     private final ClienteRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public ClienteResponseDTO registrarCliente(ClienteRegistroDTO dto) {
 
@@ -24,7 +28,7 @@ public class ClienteService {
                 () -> repository.save(dto.toEntity())
                 );
         var contas = cliente.getContas();
-        var novaConta = dto.contaDTO().toEntity(cliente);
+        var novaConta = dto.conta().toEntity(cliente);
 
         boolean jaTemTipo = contas.stream().anyMatch(
                 c -> c.getClass().equals(novaConta.getClass()) && c.isAtiva()
@@ -33,6 +37,8 @@ public class ClienteService {
             throw new ContaMesmoTipoException();
 
         cliente.getContas().add(novaConta);
+
+        cliente.setSenha(passwordEncoder.encode(dto.senha()));
 
         return ClienteResponseDTO.fromEntity(repository.save(cliente));
     }

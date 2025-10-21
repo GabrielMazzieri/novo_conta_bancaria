@@ -25,10 +25,10 @@ public class AdminBootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) {
         gerenteRepository.findByEmail(adminEmail).ifPresentOrElse(
-                geren -> {
-                    if (!geren.isAtivo()) {
-                        geren.setAtivo(true);
-                        gerenteRepository.save(geren);
+                gerente -> {
+                    if (!gerente.isAtivo()) {
+                        gerente.setAtivo(true);
+                        gerenteRepository.save(gerente);
                     }
                 },
                 () -> {
@@ -37,7 +37,7 @@ public class AdminBootstrap implements CommandLineRunner {
                             .email(adminEmail)
                             .cpf("000.000.000-00")
                             .senha(passwordEncoder.encode(adminSenha))
-                            .role(Role.ADMIN)
+                            .role(Role.GERENTE)
                             .build();
                     gerenteRepository.save(admin);
                     System.out.println("⚡ Usuário admin provisório criado: " + adminEmail);

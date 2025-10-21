@@ -17,30 +17,33 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(
+        name = "usuarios"
+)
 
 public abstract class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    protected String id;
+    private String id;
 
     @NotBlank
     @Column(nullable = false, length = 120)
-    protected String nome;
+    private String nome;
 
     @Email
     @Column(nullable = false, length = 120)
-    protected String email;
+    private String email;
 
     @NotBlank
     @Column(nullable = false, length = 11)
-    protected String cpf;
+    private String cpf;
 
     @NotBlank
     @Column(nullable = false, length = 80)
-    protected String senha;
+    private String senha;
 
     @Column(nullable = false)
-    protected Boolean ativo;
+    private boolean ativo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
