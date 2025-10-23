@@ -12,6 +12,7 @@ import com.senai.conta_bancaria.domain.exception.RendimentoInvalidoException;
 import com.senai.conta_bancaria.domain.exception.TipoDeContaInvalidaException;
 import com.senai.conta_bancaria.domain.repository.ContaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +24,14 @@ import java.util.List;
 public class ContaService {
     private final ContaRepository repository;
 
+    @PreAuthorize("hasAnyRole('CLIENTE')")
     @Transactional(readOnly = true)
     public List<ContaResumoDTO> listarTodasContas() {
         return repository.findAllByAtivaTrue().stream()
                 .map(ContaResumoDTO::fromEntity).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Transactional(readOnly = true)
     public ContaResumoDTO buscarContaPorNumero(String numero) {
         return ContaResumoDTO.fromEntity(
@@ -36,6 +39,7 @@ public class ContaService {
         );
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ContaResumoDTO atualizarConta(String numeroDaConta, ContaAtualizacaoDTO dto) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
@@ -52,12 +56,14 @@ public class ContaService {
         return ContaResumoDTO.fromEntity(repository.save(conta));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public void deletarConta(String numeroDaConta) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
         conta.setAtiva(false);
         repository.save(conta);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ContaResumoDTO sacar(String numeroDaConta, ValorSaqueDepositoDTO dto) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
@@ -65,6 +71,7 @@ public class ContaService {
         return ContaResumoDTO.fromEntity(repository.save(conta));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ContaResumoDTO depositar(String numeroDaConta, ValorSaqueDepositoDTO dto) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
@@ -72,6 +79,7 @@ public class ContaService {
         return ContaResumoDTO.fromEntity(repository.save(conta));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public ContaResumoDTO transferir(String numeroDaConta, TransferenciaDTO dto) {
         Conta contaOrigem = buscarContaAtivaPorNumero(numeroDaConta);
         Conta contaDestino = buscarContaAtivaPorNumero(dto.contaDestino());
@@ -82,6 +90,7 @@ public class ContaService {
         return ContaResumoDTO.fromEntity(repository.save(contaOrigem));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     private Conta buscarContaAtivaPorNumero(String numero) {
         return repository.findByNumeroAndAtivaTrue(numero)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("conta"));

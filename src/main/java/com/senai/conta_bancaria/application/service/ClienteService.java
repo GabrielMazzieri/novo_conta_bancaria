@@ -8,6 +8,7 @@ import com.senai.conta_bancaria.domain.exception.ContaMesmoTipoException;
 import com.senai.conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.conta_bancaria.domain.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,7 @@ public class ClienteService {
         return ClienteResponseDTO.fromEntity(repository.save(cliente));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public List<ClienteResponseDTO> listarClientesAtivos() {
         return repository.findAllByAtivoTrue().stream()
                 .map(ClienteResponseDTO::fromEntity)
