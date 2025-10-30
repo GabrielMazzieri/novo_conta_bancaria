@@ -5,19 +5,24 @@ import com.senai.conta_bancaria.domain.entity.Conta;
 import com.senai.conta_bancaria.domain.entity.ContaCorrente;
 import com.senai.conta_bancaria.domain.entity.ContaPoupanca;
 import com.senai.conta_bancaria.domain.exception.TipoDeContaInvalidaException;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 
+@Schema(description = "Representação resumida dos dados de uma conta")
 public record ContaResumoDTO(
+        @Schema(description = "Número da conta", example = "12345-6")
         @NotBlank(message = "O número da conta é obrigatório")
         String numero,
 
+        @Schema(description = "Tipo da conta (CORRENTE ou POUPANCA)", example = "CORRENTE")
         @NotBlank(message = "O tipo da conta é obrigatório")
         String tipo,
 
+        @Schema(description = "Saldo atual da conta", example = "100.00")
         @NotNull(message = "O saldo é obrigatório")
         @PositiveOrZero(message = "O saldo não pode ser negativo")
         BigDecimal saldo
