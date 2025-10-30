@@ -161,7 +161,7 @@ public class ClienteController {
     }
 
     @Operation(
-            summary = "Desativa (apaga logicamente) um cliente",
+            summary = "Desativa um cliente",
             description = "Marca um cliente e todas as suas contas associadas como inativos.",
             parameters = {
                     @Parameter(name = "cpf", description = "CPF do cliente a ser desativado", example = "12345678901", required = true)
