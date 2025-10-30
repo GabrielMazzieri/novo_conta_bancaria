@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.senai</groupId>
-	<artifactId>conta_bancaria</artifactId>
+	<artifactId>novo_conta_bancaria</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>conta_bancaria</name>
+	<name>novo_conta_bancaria</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
