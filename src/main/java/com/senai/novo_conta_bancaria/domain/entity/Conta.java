@@ -22,7 +22,8 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public abstract class Conta {
+public abstract class
+Conta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
