@@ -7,6 +7,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -36,7 +37,7 @@ public class  Pagamento{
     @JoinTable(name = "pagamento_taxa",
             joinColumns = @JoinColumn(name = "pagamento_id"),
             inverseJoinColumns = @JoinColumn(name = "taxa_id"))
-    private HashSet<Taxa> taxas;
+    private Set<Taxa> taxas;
 
 public void calcularValorFinal(BigDecimal valorFinal){
 }

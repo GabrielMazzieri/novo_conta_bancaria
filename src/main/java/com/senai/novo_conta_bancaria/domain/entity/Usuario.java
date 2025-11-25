@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(
-        name = "usuarios"
+    name = "usuarios"
 )
 
 public abstract class Usuario {

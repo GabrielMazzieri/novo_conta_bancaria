@@ -5,7 +5,9 @@ import com.senai.novo_conta_bancaria.domain.exception.TransferirParaMesmaContaEx
 import com.senai.novo_conta_bancaria.domain.exception.ValoresNegativosException;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -19,7 +21,8 @@ import java.math.BigDecimal;
                 @UniqueConstraint(name = "uk_cliente_tipo", columnNames = {"cliente_id", "tipo_conta"})
         }
 )
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 public abstract class

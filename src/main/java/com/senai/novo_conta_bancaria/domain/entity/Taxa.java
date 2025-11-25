@@ -2,11 +2,14 @@ package com.senai.novo_conta_bancaria.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Taxa {
     @Id

@@ -24,7 +24,7 @@ import java.util.List;
 public class ContaService {
     private final ContaRepository repository;
 
-    @PreAuthorize("hasAnyRole('CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Transactional(readOnly = true)
     public List<ContaResumoDTO> listarTodasContas() {
         return repository.findAllByAtivaTrue().stream()
@@ -63,7 +63,7 @@ public class ContaService {
         repository.save(conta);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
     public ContaResumoDTO sacar(String numeroDaConta, ValorSaqueDepositoDTO dto) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
@@ -71,7 +71,7 @@ public class ContaService {
         return ContaResumoDTO.fromEntity(repository.save(conta));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
     public ContaResumoDTO depositar(String numeroDaConta, ValorSaqueDepositoDTO dto) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
@@ -79,7 +79,7 @@ public class ContaService {
         return ContaResumoDTO.fromEntity(repository.save(conta));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
     public ContaResumoDTO transferir(String numeroDaConta, TransferenciaDTO dto) {
         Conta contaOrigem = buscarContaAtivaPorNumero(numeroDaConta);
         Conta contaDestino = buscarContaAtivaPorNumero(dto.contaDestino());
