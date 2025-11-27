@@ -156,4 +156,34 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(AutenticacaoIoTExpiradaException.class)
+    public ProblemDetail handleAutenticacaoIoT(AutenticacaoIoTExpiradaException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.buildProblem(
+                HttpStatus.UNAUTHORIZED,
+                "Falha na Autenticação Biométrica",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(PagamentoInvalidoException.class)
+    public ProblemDetail handlePagamentoInvalido(PagamentoInvalidoException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.buildProblem(
+                HttpStatus.BAD_REQUEST,
+                "Pagamento Inválido",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(TaxaInvalidaException.class)
+    public ProblemDetail handleTaxaInvalida(TaxaInvalidaException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.buildProblem(
+                HttpStatus.BAD_REQUEST,
+                "Taxa Inválida",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
 }
