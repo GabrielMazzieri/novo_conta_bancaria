@@ -22,12 +22,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class ContaService {
-    private final ContaRepository repository;
+    private final ContaRepository contaRepository;
+    private final AutenticacaoIoTService autenticacaoIoTService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Transactional(readOnly = true)
     public List<ContaResumoDTO> listarTodasContas() {
-        return repository.findAllByAtivaTrue().stream()
+        return contaRepository.findAllByAtivaTrue().stream()
                 .map(ContaResumoDTO::fromEntity).toList();
     }
 
@@ -53,22 +54,23 @@ public class ContaService {
         }
         conta.setSaldo(dto.saldo());
 
-        return ContaResumoDTO.fromEntity(repository.save(conta));
+        return ContaResumoDTO.fromEntity(contaRepository.save(conta));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public void deletarConta(String numeroDaConta) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
         conta.setAtiva(false);
-        repository.save(conta);
+        contaRepository.save(conta);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
     public ContaResumoDTO sacar(String numeroDaConta, ValorSaqueDepositoDTO dto) {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
+        autenticacaoIoTService.solicitarAutenticacaoBiometrica(conta.getCliente());
         conta.sacar(dto.valor());
-        return ContaResumoDTO.fromEntity(repository.save(conta));
+        return ContaResumoDTO.fromEntity(contaRepository.save(conta));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
@@ -76,7 +78,7 @@ public class ContaService {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
 
         conta.depositar(dto.valor());
-        return ContaResumoDTO.fromEntity(repository.save(conta));
+        return ContaResumoDTO.fromEntity(contaRepository.save(conta));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
@@ -86,13 +88,13 @@ public class ContaService {
 
         contaOrigem.transferir(dto.valor(), contaDestino);
 
-        repository.save(contaDestino);
-        return ContaResumoDTO.fromEntity(repository.save(contaOrigem));
+        contaRepository.save(contaDestino);
+        return ContaResumoDTO.fromEntity(contaRepository.save(contaOrigem));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     private Conta buscarContaAtivaPorNumero(String numero) {
-        return repository.findByNumeroAndAtivaTrue(numero)
+        return contaRepository.findByNumeroAndAtivaTrue(numero)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("conta"));
     }
 
@@ -100,7 +102,7 @@ public class ContaService {
         Conta conta = buscarContaAtivaPorNumero(numeroDaConta);
         if (conta instanceof ContaPoupanca poupanca) {
             poupanca.aplicarRendimento();
-            return ContaResumoDTO.fromEntity(repository.save(poupanca));
+            return ContaResumoDTO.fromEntity(contaRepository.save(poupanca));
         }
         throw new RendimentoInvalidoException();
     }

@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class  Pagamento{
+public class  Pagamento {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -38,8 +38,4 @@ public class  Pagamento{
             joinColumns = @JoinColumn(name = "pagamento_id"),
             inverseJoinColumns = @JoinColumn(name = "taxa_id"))
     private Set<Taxa> taxas;
-
-public void calcularValorFinal(BigDecimal valorFinal){
-}
-public void validarPagamento(){}
 }

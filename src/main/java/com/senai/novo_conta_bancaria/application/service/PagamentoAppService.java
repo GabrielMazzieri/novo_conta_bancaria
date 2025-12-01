@@ -29,7 +29,7 @@ public class PagamentoAppService {
     private final ContaRepository contaRepository;
     private final TaxaRepository taxaRepository;
     private final PagamentoDomainService domainService;
-    //private final MqttService mqttService;
+    private final AutenticacaoIoTService autenticacaoIoTService;
 
     @PreAuthorize("hasRole('CLIENTE')")
     public PagamentoResponseDTO solicitarPagamento(PagamentoRequestDTO dto) {
@@ -37,8 +37,17 @@ public class PagamentoAppService {
         Conta conta = contaRepository.findByNumeroAndAtivaTrue(dto.numeroConta())
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Conta"));
 
-        List<Taxa> taxasLista = taxaRepository.findAll();
-        Set<Taxa> taxasAplicaveis = new HashSet<>(taxasLista);
+        autenticacaoIoTService.solicitarAutenticacaoBiometrica(conta.getCliente());
+
+        List<Taxa> todasTaxas = taxaRepository.findAll();
+        Set<Taxa> taxasAplicaveis = new HashSet<>();
+
+        for (Taxa taxa : todasTaxas) {
+            String descricao = taxa.getDescricao().toUpperCase();
+            if (descricao.contains("BOLETO") || descricao.contains("PAGAMENTO") || descricao.contains("TARIFA")) {
+                taxasAplicaveis.add(taxa);
+            }
+        }
 
         var valorFinal = domainService.calcularValorFinal(dto.valor(), taxasAplicaveis);
 
@@ -56,6 +65,5 @@ public class PagamentoAppService {
         pagamentoRepository.save(pagamento);
 
         return PagamentoResponseDTO.fromEntity(pagamento);
-
     }
 }
