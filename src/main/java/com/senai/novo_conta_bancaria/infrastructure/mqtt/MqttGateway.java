@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MqttGateway {
-    @MqttPublisher("banco/autenticacao/solicitacao")
-    public String enviarSolicitacaoBiometria(String jsonPayload) {
-        return jsonPayload;
+    public void enviarSolicitacaoBiometria(String topico, String jsonPayload) {
+        System.out.println("Enviando para tópico: " + topico + " | Payload: " + jsonPayload);
     }
 }
 

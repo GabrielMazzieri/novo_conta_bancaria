@@ -51,9 +51,11 @@ public class AutenticacaoIoTService {
             String jsonPayload = String.format("{\"clienteId\":\"%s\", \"acao\":\"SOLICITAR_BIOMETRIA\", \"codigo\":\"%s\"}",
                     cliente.getId(), codigoGerado);
 
+            String topicoSolicitacao = "banco/autenticacao/" + cliente.getId();
+
             log.info("Enviando solicitação MQTT para cliente {}. Aguardando...", cliente.getId());
 
-            mqttGateway.enviarSolicitacaoBiometria(jsonPayload);
+            mqttGateway.enviarSolicitacaoBiometria(topicoSolicitacao, jsonPayload);
 
             boolean recebeuResposta = latch.await(40, TimeUnit.SECONDS);
 

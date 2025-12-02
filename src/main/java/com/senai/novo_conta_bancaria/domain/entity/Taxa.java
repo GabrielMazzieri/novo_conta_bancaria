@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,7 +27,7 @@ public class Taxa {
     private BigDecimal valorFixo;
 
     @ManyToMany(mappedBy = "taxas", fetch = FetchType.LAZY)
-    private HashSet<Pagamento> pagamentos;
+    private Set<Pagamento> pagamentos = new HashSet<>();
 
     public BigDecimal calcular(BigDecimal valorBase) {
         BigDecimal percentualValor = valorBase.multiply(percentual.divide(BigDecimal.valueOf(100)));
