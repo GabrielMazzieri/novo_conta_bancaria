@@ -14,9 +14,14 @@ public record ClienteAtualizadoDTO(
         @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres.")
         String nome,
 
-        @Schema(description = "Número do CPF do cliente (apenas dígitos)", example = "12345678901")
-        @NotBlank(message = "O CPF é obrigatório")
-        @Pattern(regexp = "\\d{11}", message = "O CPF deve conter exatamente 11 dígitos numéricos")
-        String cpf
+        @Schema(description = "Email do cliente", example = "gabriel@gmail.com")
+        @NotNull(message = "O email não pode ser nulo.")
+        @NotBlank(message = "O email não pode ser vazio.")
+        String email,
+
+        @Schema(description = "Senha do cliente", example = "12345678@")
+        @NotNull(message = "A senha não pode ser nula.")
+        @NotBlank(message = "A senha não pode ser vazia.")
+        String senha
 ) {
 }

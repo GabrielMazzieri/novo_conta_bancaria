@@ -5,6 +5,7 @@ import com.senai.novo_conta_bancaria.application.dto.ClienteRegistroDTO;
 import com.senai.novo_conta_bancaria.application.dto.ClienteResponseDTO;
 import com.senai.novo_conta_bancaria.domain.entity.Cliente;
 import com.senai.novo_conta_bancaria.domain.exception.ContaMesmoTipoException;
+import com.senai.novo_conta_bancaria.domain.exception.EmailExistenteException;
 import com.senai.novo_conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.novo_conta_bancaria.domain.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,10 @@ public class ClienteService {
     private final PasswordEncoder passwordEncoder;
 
     public ClienteResponseDTO registrarCliente(ClienteRegistroDTO dto) {
+        if (repository.existsByEmailAndAtivoTrue(dto.email())){
+            String mensagem = "Endereço de e-mail \"" + dto.email() + "\" já foi cadastrado.";
+            throw new EmailExistenteException(mensagem);
+        }
 
         var cliente = repository.findByCpfAndAtivoTrue(dto.cpf()).orElseGet(
                 () -> repository.save(dto.toEntity())

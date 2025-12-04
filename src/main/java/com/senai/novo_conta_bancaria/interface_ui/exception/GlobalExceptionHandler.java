@@ -35,6 +35,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EmailExistenteException.class)
+    public ProblemDetail handEmailExistente(EmailExistenteException ex, HttpServletRequest request){
+        return ProblemDetailUtils.buildProblem(
+                HttpStatus.BAD_REQUEST,
+                "Esse email já existe.",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(ContaMesmoTipoException.class)
     public ProblemDetail handleContaMesmoTipo(ContaMesmoTipoException ex, HttpServletRequest request) {
         return ProblemDetailUtils.buildProblem(
