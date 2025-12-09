@@ -1,7 +1,7 @@
 package com.senai.novo_conta_bancaria.application.service;
 
-import com.rafaelcosta.spring_mqttx.domain.annotation.MqttPayload;
-import com.rafaelcosta.spring_mqttx.domain.annotation.MqttSubscriber;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senai.novo_conta_bancaria.domain.entity.Cliente;
 import com.senai.novo_conta_bancaria.domain.entity.CodigoAutenticacao;
 import com.senai.novo_conta_bancaria.domain.entity.DispositivoIoT;
@@ -9,7 +9,7 @@ import com.senai.novo_conta_bancaria.domain.exception.AutenticacaoIoTExpiradaExc
 import com.senai.novo_conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.novo_conta_bancaria.domain.repository.CodigoAutenticacaoRepository;
 import com.senai.novo_conta_bancaria.domain.repository.DispositivoIoTRepository;
-import com.senai.novo_conta_bancaria.infrastructure.mqtt.MqttGateway;
+import com.senai.novo_conta_bancaria.infrastructure.mqtt.BiometriaMqttPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,9 @@ public class AutenticacaoIoTService {
 
     private final DispositivoIoTRepository dispositivoRepository;
     private final CodigoAutenticacaoRepository codigoRepository;
-    private final MqttGateway mqttGateway;
+    private final BiometriaMqttPublisher mqttPublisher;
+    private final ObjectMapper objectMapper;
+
     private final Map<String, CountDownLatch> travasDeEspera = new ConcurrentHashMap<>();
 
     public void solicitarAutenticacaoBiometrica(Cliente cliente) {
@@ -51,11 +53,9 @@ public class AutenticacaoIoTService {
             String jsonPayload = String.format("{\"clienteId\":\"%s\", \"acao\":\"SOLICITAR_BIOMETRIA\", \"codigo\":\"%s\"}",
                     cliente.getId(), codigoGerado);
 
-            String topicoSolicitacao = "banco/autenticacao/" + cliente.getId();
+            log.info("Enviando solicitação MQTT para cliente {}. Aguardando resposta...", cliente.getId());
 
-            log.info("Enviando solicitação MQTT para cliente {}. Aguardando...", cliente.getId());
-
-            mqttGateway.enviarSolicitacaoBiometria(topicoSolicitacao, jsonPayload);
+            mqttPublisher.enviarSolicitacao(jsonPayload);
 
             boolean recebeuResposta = latch.await(40, TimeUnit.SECONDS);
 
@@ -65,7 +65,7 @@ public class AutenticacaoIoTService {
             }
 
             CodigoAutenticacao codigoAtualizado = codigoRepository.findById(novoCodigo.getId())
-                    .orElseThrow(() -> new AutenticacaoIoTExpiradaException());
+                    .orElseThrow(AutenticacaoIoTExpiradaException::new);
 
             if (!codigoAtualizado.isValidado()) {
                 throw new AutenticacaoIoTExpiradaException();
@@ -81,16 +81,14 @@ public class AutenticacaoIoTService {
         }
     }
 
-    @MqttSubscriber("banco/validacao/+")
-    public void receberConfirmacaoBiometria(@MqttPayload String payload) {
+    public void processarRespostaBiometria(String payload) {
         try {
-            log.info("Recebido MQTT no tópico de validação: {}", payload);
-
-            String clienteId = extrairValorJson(payload, "clienteId");
-            String codigoRecebido = extrairValorJson(payload, "codigo");
+            Map<String, String> dados = objectMapper.readValue(payload, Map.class);
+            String clienteId = dados.get("clienteId");
+            String codigoRecebido = dados.get("codigo");
 
             if (clienteId == null || codigoRecebido == null) {
-                log.warn("Payload inválido ou incompleto recebido: {}", payload);
+                log.warn("Payload MQTT inválido ou incompleto: {}", payload);
                 return;
             }
 
@@ -102,7 +100,7 @@ public class AutenticacaoIoTService {
                             codigoBanco.setValidado(true);
                             codigoRepository.save(codigoBanco);
 
-                            log.info("Código validado corretamente para o cliente {}. Liberando thread...", clienteId);
+                            log.info("Código validado corretamente para cliente {}. Liberando thread...", clienteId);
 
                             if (travasDeEspera.containsKey(clienteId)) {
                                 travasDeEspera.get(clienteId).countDown();
@@ -112,27 +110,10 @@ public class AutenticacaoIoTService {
                         }
                     });
 
+        } catch (JsonProcessingException e) {
+            log.error("Erro ao fazer parse do JSON recebido via MQTT", e);
         } catch (Exception e) {
-            log.error("Erro ao processar mensagem MQTT recebida", e);
-        }
-    }
-
-    private String extrairValorJson(String json, String chave) {
-        try {
-            String search = "\"" + chave + "\":\"";
-            int start = json.indexOf(search);
-            if (start == -1) {
-                search = "\"" + chave + "\":";
-                start = json.indexOf(search);
-                if (start == -1) return null;
-            } else {
-                start += search.length();
-                int end = json.indexOf("\"", start);
-                return json.substring(start, end);
-            }
-            return null;
-        } catch (Exception e) {
-            return null;
+            log.error("Erro inesperado ao processar resposta de biometria", e);
         }
     }
 }

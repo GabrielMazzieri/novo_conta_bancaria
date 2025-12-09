@@ -12,6 +12,8 @@ import com.senai.novo_conta_bancaria.domain.repository.PagamentoRepository;
 import com.senai.novo_conta_bancaria.domain.repository.TaxaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+
 public class PagamentoAppService {
 
     private final PagamentoRepository pagamentoRepository;
@@ -31,13 +33,18 @@ public class PagamentoAppService {
     private final PagamentoDomainService domainService;
     private final AutenticacaoIoTService autenticacaoIoTService;
 
+    @Autowired
+    @Lazy
+    private PagamentoAppService self;
+
     @PreAuthorize("hasRole('CLIENTE')")
     public PagamentoResponseDTO solicitarPagamento(PagamentoRequestDTO dto) {
 
         Conta conta = contaRepository.findByNumeroAndAtivaTrue(dto.numeroConta())
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Conta"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Conta não encontrada"));
 
         autenticacaoIoTService.solicitarAutenticacaoBiometrica(conta.getCliente());
+
 
         List<Taxa> todasTaxas = taxaRepository.findAll();
         Set<Taxa> taxasAplicaveis = new HashSet<>();
@@ -50,6 +57,12 @@ public class PagamentoAppService {
         }
 
         var valorFinal = domainService.calcularValorFinal(dto.valor(), taxasAplicaveis);
+
+        return self.concluirPagamento(conta, dto, valorFinal, taxasAplicaveis);
+    }
+
+    @Transactional
+    public PagamentoResponseDTO concluirPagamento(Conta conta, PagamentoRequestDTO dto, java.math.BigDecimal valorFinal, Set<Taxa> taxasAplicaveis) {
 
         conta.sacar(valorFinal);
         contaRepository.save(conta);
