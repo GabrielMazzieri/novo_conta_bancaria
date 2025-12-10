@@ -3,11 +3,14 @@ package com.senai.novo_conta_bancaria.application.service;
 import com.senai.novo_conta_bancaria.application.dto.ClienteAtualizadoDTO;
 import com.senai.novo_conta_bancaria.application.dto.ClienteRegistroDTO;
 import com.senai.novo_conta_bancaria.application.dto.ClienteResponseDTO;
+import com.senai.novo_conta_bancaria.application.dto.DispositivoRegistroDTO;
 import com.senai.novo_conta_bancaria.domain.entity.Cliente;
+import com.senai.novo_conta_bancaria.domain.entity.DispositivoIoT;
 import com.senai.novo_conta_bancaria.domain.exception.ContaMesmoTipoException;
 import com.senai.novo_conta_bancaria.domain.exception.EmailExistenteException;
 import com.senai.novo_conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.novo_conta_bancaria.domain.repository.ClienteRepository;
+import com.senai.novo_conta_bancaria.domain.repository.DispositivoIoTRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +25,7 @@ import java.util.List;
 public class ClienteService {
 
     private final ClienteRepository repository;
+    private final DispositivoIoTRepository dispositivoRepository;
     private final PasswordEncoder passwordEncoder;
 
     public ClienteResponseDTO registrarCliente(ClienteRegistroDTO dto) {
@@ -86,5 +90,28 @@ public class ClienteService {
                 () -> new EntidadeNaoEncontradaException("cliente")
         );
         return cliente;
+    }
+
+    public void vincularDispositivo(String cpf, DispositivoRegistroDTO dto) {
+        Cliente cliente = buscarClientePorCpfEAtivo(cpf);
+
+        if (dispositivoRepository.findByCodigoSerial(dto.codigoSerial()).isPresent()) {
+            throw new IllegalArgumentException("Este dispositivo já está cadastrado no sistema.");
+        }
+
+        dispositivoRepository.findByClienteIdAndAtivoTrue(cliente.getId())
+                .ifPresent(dispositivoAntigo -> {
+                    dispositivoAntigo.setAtivo(false);
+                    dispositivoRepository.save(dispositivoAntigo);
+                });
+
+        DispositivoIoT novoDispositivo = DispositivoIoT.builder()
+                .codigoSerial(dto.codigoSerial())
+                .chavePublica(dto.chavePublica())
+                .ativo(true)
+                .cliente(cliente)
+                .build();
+
+        dispositivoRepository.save(novoDispositivo);
     }
 }

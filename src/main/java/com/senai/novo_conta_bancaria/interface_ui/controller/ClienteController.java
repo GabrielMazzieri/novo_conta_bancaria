@@ -3,6 +3,7 @@ package com.senai.novo_conta_bancaria.interface_ui.controller;
 import com.senai.novo_conta_bancaria.application.dto.ClienteAtualizadoDTO;
 import com.senai.novo_conta_bancaria.application.dto.ClienteRegistroDTO;
 import com.senai.novo_conta_bancaria.application.dto.ClienteResponseDTO;
+import com.senai.novo_conta_bancaria.application.dto.DispositivoRegistroDTO;
 import com.senai.novo_conta_bancaria.application.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -181,4 +183,12 @@ public class ClienteController {
         service.deletarCliente(cpf);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Vincular dispositivo IoT", description = "Cadastra um dispositivo para autenticação biométrica do cliente.")
+    @PostMapping("/{cpf}/dispositivo")
+    public ResponseEntity<Void> vincularDispositivo(@PathVariable String cpf, @org.springframework.web.bind.annotation.RequestBody @Valid DispositivoRegistroDTO dto) {
+        service.vincularDispositivo(cpf, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 }
