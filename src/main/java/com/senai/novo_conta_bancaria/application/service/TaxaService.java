@@ -27,6 +27,8 @@ public class TaxaService {
         taxa.setPercentual(dto.percentual());
         taxa.setValorFixo(dto.valorFixo() != null ? dto.valorFixo() : BigDecimal.ZERO);
 
+        taxa.setTipoPagamento(dto.tipoPagamento());
+
         return TaxaResponseDTO.fromEntity(repository.save(taxa));
     }
 

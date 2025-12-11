@@ -1,5 +1,6 @@
 package com.senai.novo_conta_bancaria.domain.entity;
 
+import com.senai.novo_conta_bancaria.domain.enums.FormaPagamento;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -25,6 +26,10 @@ public class Taxa {
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal valorFixo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FormaPagamento tipoPagamento;
 
     @ManyToMany(mappedBy = "taxas", fetch = FetchType.LAZY)
     private Set<Pagamento> pagamentos = new HashSet<>();

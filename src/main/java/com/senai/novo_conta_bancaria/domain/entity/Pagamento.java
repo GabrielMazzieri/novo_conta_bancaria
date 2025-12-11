@@ -1,5 +1,6 @@
 package com.senai.novo_conta_bancaria.domain.entity;
 
+import com.senai.novo_conta_bancaria.domain.enums.FormaPagamento;
 import com.senai.novo_conta_bancaria.domain.enums.PagamentoStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -32,6 +33,10 @@ public class  Pagamento {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     protected PagamentoStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FormaPagamento formaPagamento;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "pagamento_taxa",

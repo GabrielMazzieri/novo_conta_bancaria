@@ -5,6 +5,7 @@ import com.senai.novo_conta_bancaria.application.dto.GerenteRegistroDTO;
 import com.senai.novo_conta_bancaria.application.dto.GerenteResponseDTO;
 import com.senai.novo_conta_bancaria.application.dto.GerenteResponseDTO;
 import com.senai.novo_conta_bancaria.domain.entity.Gerente;
+import com.senai.novo_conta_bancaria.domain.exception.EmailExistenteException;
 import com.senai.novo_conta_bancaria.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.novo_conta_bancaria.domain.repository.GerenteRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,12 @@ public class GerenteService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public GerenteResponseDTO registrarGerente(GerenteRegistroDTO dto) {
+        repository.findByEmail(dto.email()).ifPresent(gerente -> {
+            if (gerente.isAtivo()) {
+                throw new EmailExistenteException("Endereço de e-mail \"" + dto.email() + "\" já foi cadastrado.");
+            }
+        });
+
         Gerente gerenteRegistrado = repository
                 .findByCpfAndAtivoTrue(dto.cpf())
                 .orElseGet(

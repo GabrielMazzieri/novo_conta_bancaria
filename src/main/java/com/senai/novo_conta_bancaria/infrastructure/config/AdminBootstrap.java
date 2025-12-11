@@ -37,7 +37,7 @@ public class AdminBootstrap implements CommandLineRunner {
                             .email(adminEmail)
                             .cpf("00000000000")
                             .senha(passwordEncoder.encode(adminSenha))
-                            .role(Role.GERENTE)
+                            .role(Role.ADMIN)
                             .build();
                     gerenteRepository.save(admin);
                     System.out.println("⚡ Usuário admin provisório criado: " + adminEmail);

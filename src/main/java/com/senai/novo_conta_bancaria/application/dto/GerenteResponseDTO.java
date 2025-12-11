@@ -27,21 +27,14 @@ public record GerenteResponseDTO(
         @Email
         @NotNull(message = "O e-mail não pode ser nulo.")
         @NotBlank(message = "O e-mail não pode ser vazio.")
-        String email,
-
-        @Schema(description = "Senha (hash) do gerente", example = "$2a$10$...")
-        @NotNull(message = "A senha não pode ser nula.")
-        @NotBlank(message = "A senha não pode ser vazia.")
-        @Size(min = 8, max = 100, message = "A senha deve ter entre 8 e 100 caracteres.")
-        String senha
+        String email
 ) {
     public static GerenteResponseDTO fromEntity(Gerente gerente) {
         return new GerenteResponseDTO(
                 gerente.getId(),
                 gerente.getNome(),
                 gerente.getCpf(),
-                gerente.getEmail(),
-                gerente.getSenha()
+                gerente.getEmail()
         );
     }
 }

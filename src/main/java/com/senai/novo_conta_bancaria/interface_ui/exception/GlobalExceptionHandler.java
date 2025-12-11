@@ -3,6 +3,7 @@ package com.senai.novo_conta_bancaria.interface_ui.exception;
 import com.senai.novo_conta_bancaria.domain.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -17,12 +18,20 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handlerConflitosGerais(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ProblemDetail handlerConflitosGerais(Exception ex, HttpServletRequest request) {
+        log.error("Erro interno não tratado: ", ex);
+
+        return ProblemDetailUtils.buildProblem(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Erro Interno do Servidor",
+                "Ocorreu um erro inesperado. Entre em contato com o suporte.",
+                request.getRequestURI()
+        );
     }
 
     @ExceptionHandler(ValoresNegativosException.class)

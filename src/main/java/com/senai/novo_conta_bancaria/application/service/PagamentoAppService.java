@@ -39,24 +39,18 @@ public class PagamentoAppService {
 
     @PreAuthorize("hasRole('CLIENTE')")
     public PagamentoResponseDTO solicitarPagamento(PagamentoRequestDTO dto) {
+        domainService.validarVencimento(dto.dataVencimento());
 
         Conta conta = contaRepository.findByNumeroAndAtivaTrue(dto.numeroConta())
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Conta não encontrada"));
 
         autenticacaoIoTService.solicitarAutenticacaoBiometrica(conta.getCliente());
 
-
-        List<Taxa> todasTaxas = taxaRepository.findAll();
-        Set<Taxa> taxasAplicaveis = new HashSet<>();
-
-        for (Taxa taxa : todasTaxas) {
-            String descricao = taxa.getDescricao().toUpperCase();
-            if (descricao.contains("BOLETO") || descricao.contains("PAGAMENTO") || descricao.contains("TARIFA")) {
-                taxasAplicaveis.add(taxa);
-            }
-        }
+        List<Taxa> listaTaxas = taxaRepository.findByTipoPagamento(dto.formaPagamento());
+        Set<Taxa> taxasAplicaveis = new HashSet<>(listaTaxas);
 
         var valorFinal = domainService.calcularValorFinal(dto.valor(), taxasAplicaveis);
+        domainService.validarSaldoSuficiente(conta, valorFinal);
 
         return self.concluirPagamento(conta, dto, valorFinal, taxasAplicaveis);
     }
@@ -73,6 +67,7 @@ public class PagamentoAppService {
         pagamento.setValorPago(valorFinal);
         pagamento.setDataPagamento(LocalDateTime.now());
         pagamento.setStatus(PagamentoStatus.SUCESSO);
+        pagamento.setFormaPagamento(dto.formaPagamento());
         pagamento.setTaxas(taxasAplicaveis);
 
         pagamentoRepository.save(pagamento);

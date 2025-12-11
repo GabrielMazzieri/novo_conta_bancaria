@@ -33,11 +33,7 @@ public record GerenteRegistroDTO(
         @NotNull(message = "A senha não pode ser nulo.")
         @NotBlank(message = "A senha não pode ser vazio")
         @Size(min = 8, max = 100, message = "A senha deve ter entre 8 e 100 caracteres.")
-        String senha,
-
-        @Schema(description = "Dados da conta (campo obrigatório, mas não utilizado para Gerente. Pode enviar vazio ou default).")
-        @NotNull(message = "As informações da conta são obrigatórias")
-        @Valid ContaResumoDTO conta
+        String senha
 ) {
     public Gerente toEntity() {
         return Gerente.builder()
