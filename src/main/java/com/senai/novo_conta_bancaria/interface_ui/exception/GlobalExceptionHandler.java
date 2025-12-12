@@ -8,6 +8,8 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -201,6 +203,16 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 "Taxa Inválida",
                 ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+    public ProblemDetail handleAcessoNegado(Exception ex, HttpServletRequest request) {
+        return ProblemDetailUtils.buildProblem(
+                HttpStatus.FORBIDDEN,
+                "Acesso Negado",
+                "Você não tem permissão para realizar esta operação.",
                 request.getRequestURI()
         );
     }

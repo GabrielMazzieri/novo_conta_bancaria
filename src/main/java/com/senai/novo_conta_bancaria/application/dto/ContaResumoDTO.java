@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Schema(description = "Representação resumida dos dados de uma conta")
 public record ContaResumoDTO(
@@ -54,7 +55,7 @@ public record ContaResumoDTO(
         return new ContaResumoDTO(
                 conta.getNumero(),
                 conta.getTipo(),
-                conta.getSaldo()
+                conta.getSaldo().setScale(2, RoundingMode.HALF_UP)
         );
     }
 }

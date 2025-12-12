@@ -47,7 +47,7 @@ public class TaxaController {
 
     @Operation(summary = "Deleta uma taxa")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('GERENTE')")
+    @PreAuthorize("hasRole('GERENTE', 'ADMIN')")
     public ResponseEntity<Void> deletarTaxa(@PathVariable String id) {
         service.deletarTaxa(id);
         return ResponseEntity.noContent().build();

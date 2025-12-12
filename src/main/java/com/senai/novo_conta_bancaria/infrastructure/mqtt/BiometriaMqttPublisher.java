@@ -9,10 +9,4 @@ public class BiometriaMqttPublisher {
     public String enviarSolicitacao(String jsonPayload) {
         return jsonPayload;
     }
-
-    // No BiometriaMqttPublisher.java
-    @MqttPublisher("banco/validacao/biometria")
-    public String enviarRespostaValidacao(String jsonPayload) {
-        return jsonPayload;
-    }
 }

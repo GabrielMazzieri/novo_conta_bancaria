@@ -40,7 +40,7 @@ public class ContaService {
                 .map(ContaResumoDTO::fromEntity).toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'CLIENTE')")
     @Transactional(readOnly = true)
     public ContaResumoDTO buscarContaPorNumero(String numero) {
         Conta conta = buscarContaAtivaPorNumero(numero);
