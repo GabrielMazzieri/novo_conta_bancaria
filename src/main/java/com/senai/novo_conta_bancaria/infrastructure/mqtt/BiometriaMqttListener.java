@@ -12,7 +12,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class BiometriaMqttListener {
-
     private final AutenticacaoIoTService autenticacaoService;
 
     @MqttSubscriber("banco/validacao/biometria")
